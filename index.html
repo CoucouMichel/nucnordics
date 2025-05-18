@@ -19,11 +19,9 @@
             height: 90vh; /* 90% of the viewport height */
             width: 100%;
         }
-        body { margin: 0; font-family: Arial, sans-serif; background-color: #222; /* Optional: dark page background */}
-        h1 { color: #eee; text-align: center; padding: 10px 0;} /* Optional: style heading for dark theme */
+        body { margin: 0; font-family: Arial, sans-serif; background-color: #222; }
+        h1 { color: #eee; text-align: center; padding: 10px 0;}
         .leaflet-popup-content-wrapper {
-            /* Default Leaflet popups are light, which is often fine on a dark map,
-               but you can customize them further if needed */
             border-radius: 5px;
         }
         .leaflet-popup-content {
@@ -36,27 +34,37 @@
             margin-bottom: 5px;
             font-size: 14px;
         }
+        .suggest-edit-btn {
+            margin-top: 10px;
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .suggest-edit-btn:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
 
-    <h1>Nordic Nuclear Projects</h1>
+    <h1>Ongoing Nuclear Projects</h1>
     <div id="map"></div>
 
     <script>
         // 1. Initialize the map
-        // Centered roughly on Scandinavia
         const map = L.map('map').setView([62, 18], 4); // Latitude, Longitude, Zoom level
 
         // 2. Add a DARK tile layer (basemap)
-        // Using CartoDB Dark Matter
         L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-            subdomains: 'abcd', // Standard for CartoDB
-            maxZoom: 19 // CartoDB supports up to zoom 19
+            subdomains: 'abcd',
+            maxZoom: 19
         }).addTo(map);
 
-// 3. Define your nuclear project data (Updated from Progress Tracker - CORRECTED)
+        // 3. Define your nuclear project data
         const nuclearProjects = [
             // Denmark
             {
@@ -73,8 +81,8 @@
               name: "Copenhagen Atomics: Thorium MSR",
               country: "Denmark",
               locationName: "Copenhagen (Development for Export, e.g., Borneo)",
-              lat: 55.6761,
-              lng: 12.5683,
+              lat: 55.6761, // Shares coords with Saltfoss, consider slight offset if needed for distinct clicking on base map
+              lng: 12.5683, // For Copenhagen-based HQs, offsetting might be desired if map is very zoomed in
               type: "Thorium Molten Salt Reactor",
               status: "Development, prototyping. Non-fission prototype tested (2022). PSI test 2027.",
               description: "Mass-manufactured SMRs for export (e.g., 1 GWe ammonia plant in Borneo). Borneo plant target 2028. Challenge: Large-scale funding, supply chain."
@@ -84,8 +92,8 @@
               name: "Fermi Energia: BWRX-300 Project",
               country: "Estonia",
               locationName: "Viru-Nigula or Lüganuse (Site Selection Ongoing)",
-              lat: 59.4440, // Approx. for Viru-Nigula area
-              lng: 26.6900, // Approx. for Viru-Nigula area
+              lat: 59.4440, 
+              lng: 26.6900, 
               type: "SMR: BWRX-300 (2 units, 600 MWe total)",
               status: "State Spatial Planning initiated (Jan 2025). Pre-FEED with Samsung C&T.",
               description: "Proposed NPP. Site pre-selection 2025-2027. First SMR H2 2035. Challenge: Building regulatory system from scratch, FOAK risks."
@@ -95,8 +103,8 @@
               name: "Steady Energy: LDR-50 District Heating SMR",
               country: "Finland",
               locationName: "Helsinki (Planned Commercial Unit, Pilot 2025)",
-              lat: 60.1695,
-              lng: 24.9354,
+              lat: 60.1749, // Original coordinate for Helsinki
+              lng: 24.8017, // Original coordinate for Helsinki
               type: "SMR: LDR-50 (District Heating)",
               status: "LDR-50 design under STUK assessment. LDR-e (non-nuclear pilot) construction 2025.",
               description: "Multiple commercial units planned (e.g., Helsinki, Kuopio). First commercial LDR-50 operation 2030. Challenge: FOAK for heating SMR, cost-competitiveness."
@@ -104,9 +112,9 @@
             {
               name: "Fortum: New Nuclear Feasibility Study",
               country: "Finland",
-              locationName: "Finland (Specific Sites TBD)",
-              lat: 60.1705, // Slightly adjusted latitude (original was 60.1695)
-              lng: 24.9364, // Slightly adjusted longitude (original was 24.9354)
+              locationName: "Finland (Specific Sites TBD - Offset for Visibility)",
+              lat: 60.1705, // Slightly adjusted latitude from 60.1695
+              lng: 24.9364, // Slightly adjusted longitude from 24.9354
               type: "Large Reactors & SMRs (Electricity)",
               status: "Feasibility study concluded (Mar 2025). Developing project economics, partnerships.",
               description: "Post-feasibility study. New nuclear supply earliest H2 2030s if conditions favorable. Requires risk-sharing. Challenge: Economic viability without support, long lead times."
@@ -126,7 +134,7 @@
               name: "Norsk Kjernekraft: SMR Project (Aure/Heim)",
               country: "Norway",
               locationName: "Aure and Heim (Taftøy, up to 1.5 GW)",
-              lat: 63.2670, // Approx. for Aure
+              lat: 63.2670, 
               lng: 8.5170,
               type: "SMRs (Multiple technologies considered)",
               status: "EIA program development by govt. agencies ongoing. EIA recommendation by Sept 2025.",
@@ -136,7 +144,7 @@
               name: "Norsk Kjernekraft: SMR Project (Øygarden)",
               country: "Norway",
               locationName: "Øygarden (Kollsnes, up to 1.5 GW)",
-              lat: 60.5700, // Approx. for Øygarden
+              lat: 60.5700, 
               lng: 4.8700,
               type: "SMRs",
               status: "Assessment application submitted (Aug 2024).",
@@ -166,7 +174,7 @@
               name: "Blykalla & Norsk Kjernekraft: SEALER Assessment",
               country: "Norway",
               locationName: "Norway (Sites with Norsk Kjernekraft)",
-              lat: 59.9139, // Oslo as a general marker for nationwide assessment
+              lat: 59.9139, 
               lng: 10.7522,
               type: "SMR: SEALER (Lead-Cooled Fast Reactor)",
               status: "MoU (Feb 2025). Assessing site suitability, regulatory pathways, economics.",
@@ -197,7 +205,7 @@
               name: "Kärnfull Next: SMR Feasibility (Karlshamn)",
               country: "Sweden",
               locationName: "Karlshamn (Elleholm, Guö-Köpegårda)",
-              lat: 56.1720, // Karlshamn city
+              lat: 56.1720, 
               lng: 14.8610,
               type: "SMR",
               status: "Feasibility studies ongoing.",
@@ -207,7 +215,7 @@
               name: "Blykalla: SEALER-One Demo Reactor",
               country: "Sweden",
               locationName: "Studsvik (Nyköping)",
-              lat: 58.7830, // Approx. for Studsvik
+              lat: 58.7830, 
               lng: 17.3930,
               type: "Advanced SMR: SEALER (Lead-Cooled Fast Reactor, 55 MWe)",
               status: "SEALER-One licensing underway. Non-nuclear test facility construction at Oskarshamn started Feb 2025.",
@@ -225,8 +233,7 @@
             }
         ];
 
-        // 4. Add markers to the map
-        // (Your marker creation loop remains the same)
+        // 4. Add markers to the map and create popups with "Suggest an Edit" button
         nuclearProjects.forEach(project => {
             const marker = L.marker([project.lat, project.lng]).addTo(map);
 
@@ -238,8 +245,36 @@
             if (project.description) {
                 popupContent += `<p>${project.description}</p>`;
             }
+            // Add the button - Ensure project.name is properly escaped for HTML attribute
+            const safeProjectName = project.name.replace(/"/g, '&quot;');
+            popupContent += `<button class="suggest-edit-btn" data-projectname="${safeProjectName}">Suggest an Edit</button>`;
+            
             marker.bindPopup(popupContent);
         });
+
+        // 5. Event listener for "Suggest an Edit" button clicks
+        document.getElementById('map').addEventListener('click', function(event) {
+            if (event.target.classList.contains('suggest-edit-btn')) {
+                const projectName = event.target.getAttribute('data-projectname');
+                const suggestion = prompt(`Suggest an edit for: ${projectName}\n\nPlease enter your suggestion:`);
+
+                if (suggestion !== null && suggestion.trim() !== "") { // User entered something and didn't cancel
+                    // !!! REPLACE THIS WITH YOUR ACTUAL EMAIL ADDRESS !!!
+                    const email = 'YOUR_EMAIL_ADDRESS@example.com'; 
+                    const subject = `Map Edit Suggestion for: ${projectName}`;
+                    const body = `Project: ${projectName}\n\nSuggestion:\n${suggestion}`;
+                    
+                    window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                    
+                    alert("Thank you! Your email client should open for you to send the suggestion.");
+
+                } else if (suggestion !== null) { // User submitted empty suggestion
+                    alert("No suggestion provided.");
+                }
+                // If suggestion is null, the user pressed cancel - do nothing.
+            }
+        });
+
     </script>
 
 </body>
