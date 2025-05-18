@@ -223,7 +223,7 @@
         ];
 
   
-        nuclearProjects.forEach((project, index) => {
+     nuclearProjects.forEach((project, index) => {
             console.log(`Processing project ${index + 1}: ${project.name}`, "Logo URL:", project.logoUrl); 
 
             let markerOptions = {};
@@ -232,35 +232,28 @@
             if (project.logoUrl && typeof project.logoUrl === 'string' && project.logoUrl.startsWith('http')) { 
                 console.log("Attempting to create custom icon for:", project.name); 
                 
-                // --- Define desired dimensions for this icon ---
-                // You'll need to determine these based on the logo's aspect ratio
-                // and your desired display size.
-                // Example: Make logos aim for a width of 50px, height adjusted for aspect ratio.
-                // For a square logo:
-                let iconWidth = 50; 
-                let iconHeight = 50; 
+                const desiredLogoHeight = 40; // <-- SET YOUR DESIRED FIXED HEIGHT HERE (e.g., 40px)
+                let iconWidth = desiredLogoHeight; // Default to square if original dimensions are not available or usable
 
-                // For a wider logo (e.g., Fortum SVG might be wider):
-                if (project.name.includes("Fortum")) {
-                    iconWidth = 60; // Make it wider
-                    iconHeight = 30; // Adjust height to maintain aspect ratio (example values)
+                if (project.logoOriginalWidth && project.logoOriginalHeight && project.logoOriginalHeight > 0) {
+                    // Calculate width to maintain aspect ratio based on desiredLogoHeight
+                    iconWidth = (project.logoOriginalWidth / project.logoOriginalHeight) * desiredLogoHeight;
+                } else {
+                    console.warn("Original logo dimensions not provided or invalid for:", project.name, "- using square icon based on desired height.");
                 }
-                // Add more 'if' conditions for other non-square logos if needed:
-                // if (project.name.includes("SomeOtherCompanyWithWideLogo")) {
-                //     iconWidth = 60;
-                //     iconHeight = 25; // Example
-                // }
+                // Ensure minimum width to prevent zero or negative width icons if data is bad
+                iconWidth = Math.max(10, iconWidth); 
 
                 try {
                     const customIcon = L.icon({
                         iconUrl: project.logoUrl,
-                        iconSize: [iconWidth, iconHeight],    
-                        iconAnchor: [iconWidth / 2, iconHeight],  // Anchor at bottom-center
-                        popupAnchor: [0, -iconHeight] // Popup opens above the anchor
+                        iconSize: [iconWidth, desiredLogoHeight],    
+                        iconAnchor: [iconWidth / 2, desiredLogoHeight],  // Anchor at bottom-center
+                        popupAnchor: [0, -desiredLogoHeight] // Popup opens above the anchor
                     });
                     markerOptions.icon = customIcon;
                     customIconUsed = true;
-                    console.log("Custom icon created for:", project.name, "with size", iconWidth, "x", iconHeight); 
+                    console.log("Custom icon created for:", project.name, "with size", iconWidth.toFixed(0), "x", desiredLogoHeight); 
                 } catch (e) {
                     console.error("Error creating custom icon for:", project.name, e); 
                 }
