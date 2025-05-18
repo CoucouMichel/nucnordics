@@ -56,7 +56,7 @@
             maxZoom: 19 // CartoDB supports up to zoom 19
         }).addTo(map);
 
-// 3. Define your nuclear project data (Updated from Progress Tracker)
+// 3. Define your nuclear project data (Updated from Progress Tracker - CORRECTED)
         const nuclearProjects = [
             // Denmark
             {
@@ -66,8 +66,8 @@
               lat: 55.6761,
               lng: 12.5683,
               type: "CMSR (Compact Molten Salt Reactor)",
-              status: "Development. Feasibility study with GPSC (Thailand) ongoing."[cite: 2],
-              description: "Floating Power Barges, export focus. First reactor H1 2030s. Challenge: Fuel availability, technology maturation." [cite: 2]
+              status: "Development. Feasibility study with GPSC (Thailand) ongoing.",
+              description: "Floating Power Barges, export focus. First reactor H1 2030s. Challenge: Fuel availability, technology maturation."
             },
             {
               name: "Copenhagen Atomics: Thorium MSR",
@@ -76,8 +76,8 @@
               lat: 55.6761,
               lng: 12.5683,
               type: "Thorium Molten Salt Reactor",
-              status: "Development, prototyping. Non-fission prototype tested (2022). PSI test 2027."[cite: 2],
-              description: "Mass-manufactured SMRs for export (e.g., 1 GWe ammonia plant in Borneo). Borneo plant target 2028. Challenge: Large-scale funding, supply chain." [cite: 2]
+              status: "Development, prototyping. Non-fission prototype tested (2022). PSI test 2027.",
+              description: "Mass-manufactured SMRs for export (e.g., 1 GWe ammonia plant in Borneo). Borneo plant target 2028. Challenge: Large-scale funding, supply chain."
             },
             // Estonia
             {
@@ -87,8 +87,8 @@
               lat: 59.4440, // Approx. for Viru-Nigula area
               lng: 26.6900, // Approx. for Viru-Nigula area
               type: "SMR: BWRX-300 (2 units, 600 MWe total)",
-              status: "State Spatial Planning initiated (Jan 2025). Pre-FEED with Samsung C&T."[cite: 2],
-              description: "Proposed NPP. Site pre-selection 2025-2027. First SMR H2 2035. Challenge: Building regulatory system from scratch, FOAK risks." [cite: 2]
+              status: "State Spatial Planning initiated (Jan 2025). Pre-FEED with Samsung C&T.",
+              description: "Proposed NPP. Site pre-selection 2025-2027. First SMR H2 2035. Challenge: Building regulatory system from scratch, FOAK risks."
             },
             // Finland
             {
@@ -98,8 +98,8 @@
               lat: 60.1695,
               lng: 24.9354,
               type: "SMR: LDR-50 (District Heating)",
-              status: "LDR-50 design under STUK assessment. LDR-e (non-nuclear pilot) construction 2025."[cite: 2],
-              description: "Multiple commercial units planned (e.g., Helsinki, Kuopio). First commercial LDR-50 operation 2030. Challenge: FOAK for heating SMR, cost-competitiveness." [cite: 2]
+              status: "LDR-50 design under STUK assessment. LDR-e (non-nuclear pilot) construction 2025.",
+              description: "Multiple commercial units planned (e.g., Helsinki, Kuopio). First commercial LDR-50 operation 2030. Challenge: FOAK for heating SMR, cost-competitiveness."
             },
             {
               name: "Fortum: New Nuclear Feasibility Study",
@@ -108,8 +108,8 @@
               lat: 60.1695, // Helsinki as a general marker
               lng: 24.9354,
               type: "Large Reactors & SMRs (Electricity)",
-              status: "Feasibility study concluded (Mar 2025). Developing project economics, partnerships."[cite: 2],
-              description: "Post-feasibility study. New nuclear supply earliest H2 2030s if conditions favorable. Requires risk-sharing. Challenge: Economic viability without support, long lead times." [cite: 2]
+              status: "Feasibility study concluded (Mar 2025). Developing project economics, partnerships.",
+              description: "Post-feasibility study. New nuclear supply earliest H2 2030s if conditions favorable. Requires risk-sharing. Challenge: Economic viability without support, long lead times."
             },
             {
               name: "TVO: SMR Support & Olkiluoto Focus",
@@ -118,8 +118,8 @@
               lat: 61.2360,
               lng: 21.4880,
               type: "Supporting SMRs (Steady Energy LDR-50), Exploring Industrial SMRs",
-              status: "Primary focus on Olkiluoto fleet (life extension EIA submitted Dec 2024). Providing expertise to Steady Energy."[cite: 2],
-              description: "Exploring SMRs for industrial electricity. SMRs need series production & govt. support for cost reduction." [cite: 2]
+              status: "Primary focus on Olkiluoto fleet (life extension EIA submitted Dec 2024). Providing expertise to Steady Energy.",
+              description: "Exploring SMRs for industrial electricity. SMRs need series production & govt. support for cost reduction."
             },
             // Norway
             {
@@ -129,8 +129,8 @@
               lat: 63.2670, // Approx. for Aure
               lng: 8.5170,
               type: "SMRs (Multiple technologies considered)",
-              status: "EIA program development by govt. agencies ongoing. EIA recommendation by Sept 2025."[cite: 2],
-              description: "Site investigations potentially 2025. Govt. committee report on nuclear due Apr 2026. Challenge: Establishing commercial licensing, securing finance." [cite: 2]
+              status: "EIA program development by govt. agencies ongoing. EIA recommendation by Sept 2025.",
+              description: "Site investigations potentially 2025. Govt. committee report on nuclear due Apr 2026. Challenge: Establishing commercial licensing, securing finance."
             },
             {
               name: "Norsk Kjernekraft: SMR Project (Øygarden)",
@@ -139,8 +139,8 @@
               lat: 60.5700, // Approx. for Øygarden
               lng: 4.8700,
               type: "SMRs",
-              status: "Assessment application submitted (Aug 2024)."[cite: 2],
-              description: "Part of Norsk Kjernekraft's multi-site SMR development strategy." [cite: 2]
+              status: "Assessment application submitted (Aug 2024).",
+              description: "Part of Norsk Kjernekraft's multi-site SMR development strategy."
             },
             {
               name: "Norsk Kjernekraft: SMR Project (Halden)",
@@ -149,8 +149,8 @@
               lat: 59.1290,
               lng: 11.3920,
               type: "SMRs",
-              status: "SMR potential evaluation ongoing."[cite: 2],
-              description: "Part of Norsk Kjernekraft's multi-site SMR development strategy." [cite: 2]
+              status: "SMR potential evaluation ongoing.",
+              description: "Part of Norsk Kjernekraft's multi-site SMR development strategy."
             },
             {
               name: "Norsk Kjernekraft: SMR Project (Vardø)",
@@ -159,8 +159,8 @@
               lat: 70.3700,
               lng: 31.1030,
               type: "SMRs",
-              status: "Site under discussion."[cite: 2],
-              description: "Part of Norsk Kjernekraft's multi-site SMR development strategy." [cite: 2]
+              status: "Site under discussion.",
+              description: "Part of Norsk Kjernekraft's multi-site SMR development strategy."
             },
             {
               name: "Blykalla & Norsk Kjernekraft: SEALER Assessment",
@@ -169,8 +169,8 @@
               lat: 59.9139, // Oslo as a general marker for nationwide assessment
               lng: 10.7522,
               type: "SMR: SEALER (Lead-Cooled Fast Reactor)",
-              status: "MoU (Feb 2025). Assessing site suitability, regulatory pathways, economics."[cite: 2],
-              description: "Collaboration to assess SEALER integration in Norwegian projects. Challenge: Licensing novel LFR." [cite: 2]
+              status: "MoU (Feb 2025). Assessing site suitability, regulatory pathways, economics.",
+              description: "Collaboration to assess SEALER integration in Norwegian projects. Challenge: Licensing novel LFR."
             },
             // Sweden
             {
@@ -180,8 +180,8 @@
               lat: 57.2570,
               lng: 12.1130,
               type: "Large Reactors & SMRs (Rolls-Royce, GEH BWRX-300 shortlisted)",
-              status: "SMR feasibility study ongoing. Videberg Kraft AB established for state aid application."[cite: 2],
-              description: "New reactor operational H1 2030s at earliest. Intends to use state loans & CfDs. Challenge: FID for large projects, construction risk." [cite: 2]
+              status: "SMR feasibility study ongoing. Videberg Kraft AB established for state aid application.",
+              description: "New reactor operational H1 2030s at earliest. Intends to use state loans & CfDs. Challenge: FID for large projects, construction risk."
             },
             {
               name: "Kärnfull Next: SMR Park (Valdemarsvik)",
@@ -190,8 +190,8 @@
               lat: 58.2020,
               lng: 16.6020,
               type: "SMR: GEH BWRX-300, exploring KHNP i-SMR",
-              status: "Land rights secured, advancing to permitting/planning. MoU with Samsung C&T (Dec 2024)."[cite: 2],
-              description: "Re:Firm South programme. First commercial SMR early 2030s. Challenge: Financing multiple projects, permitting, public acceptance at new sites." [cite: 2]
+              status: "Land rights secured, advancing to permitting/planning. MoU with Samsung C&T (Dec 2024).",
+              description: "Re:Firm South programme. First commercial SMR early 2030s. Challenge: Financing multiple projects, permitting, public acceptance at new sites."
             },
             {
               name: "Kärnfull Next: SMR Feasibility (Karlshamn)",
@@ -200,8 +200,8 @@
               lat: 56.1720, // Karlshamn city
               lng: 14.8610,
               type: "SMR",
-              status: "Feasibility studies ongoing."[cite: 2],
-              description: "Potential sites for SMR park development under evaluation." [cite: 2]
+              status: "Feasibility studies ongoing.",
+              description: "Potential sites for SMR park development under evaluation."
             },
             {
               name: "Blykalla: SEALER-One Demo Reactor",
@@ -210,8 +210,8 @@
               lat: 58.7830, // Approx. for Studsvik
               lng: 17.3930,
               type: "Advanced SMR: SEALER (Lead-Cooled Fast Reactor, 55 MWe)",
-              status: "SEALER-One licensing underway. Non-nuclear test facility construction at Oskarshamn started Feb 2025."[cite: 2],
-              description: "Demo reactor aiming for criticality by 2029, commercial operation early 2030s. Challenge: Licensing novel LFR, scaling technology, further funding." [cite: 2]
+              status: "SEALER-One licensing underway. Non-nuclear test facility construction at Oskarshamn started Feb 2025.",
+              description: "Demo reactor aiming for criticality by 2029, commercial operation early 2030s. Challenge: Licensing novel LFR, scaling technology, further funding."
             },
             {
               name: "Blykalla: SEALER Test Facility",
@@ -220,8 +220,8 @@
               lat: 57.4170,
               lng: 16.6830,
               type: "Non-nuclear test facility for SEALER SMR",
-              status: "Construction started Feb 2025. Phase 1 completion June 2025, testing Q3 2025."[cite: 2],
-              description: "Facility for testing components and systems for the SEALER lead-cooled fast reactor." [cite: 2]
+              status: "Construction started Feb 2025. Phase 1 completion June 2025, testing Q3 2025.",
+              description: "Facility for testing components and systems for the SEALER lead-cooled fast reactor."
             }
         ];
 
