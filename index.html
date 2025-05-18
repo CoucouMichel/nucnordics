@@ -222,43 +222,81 @@
             }
         ];
 
-        nuclearProjects.forEach(project => {
+  
+        nuclearProjects.forEach((project, index) => {
+            console.log(`Processing project ${index + 1}: ${project.name}`, "Logo URL:", project.logoUrl); 
+
             let markerOptions = {};
+            let customIconUsed = false; 
 
-            if (project.logoUrl && project.logoUrl.startsWith('http')) { 
-                const customIcon = L.icon({
-                    iconUrl: project.logoUrl,
-                    iconSize: [32, 32],    // Adjust as needed
-                    iconAnchor: [16, 32],  // Bottom-center for a 32x32 icon
-                    popupAnchor: [0, -32] // Above the icon anchor
-                });
-                markerOptions.icon = customIcon;
+            if (project.logoUrl && typeof project.logoUrl === 'string' && project.logoUrl.startsWith('http')) { 
+                console.log("Attempting to create custom icon for:", project.name); 
+                
+                // --- Define desired dimensions for this icon ---
+                // You'll need to determine these based on the logo's aspect ratio
+                // and your desired display size.
+                // Example: Make logos aim for a width of 50px, height adjusted for aspect ratio.
+                // For a square logo:
+                let iconWidth = 50; 
+                let iconHeight = 50; 
+
+                // For a wider logo (e.g., Fortum SVG might be wider):
+                if (project.name.includes("Fortum")) {
+                    iconWidth = 60; // Make it wider
+                    iconHeight = 30; // Adjust height to maintain aspect ratio (example values)
+                }
+                // Add more 'if' conditions for other non-square logos if needed:
+                // if (project.name.includes("SomeOtherCompanyWithWideLogo")) {
+                //     iconWidth = 60;
+                //     iconHeight = 25; // Example
+                // }
+
+                try {
+                    const customIcon = L.icon({
+                        iconUrl: project.logoUrl,
+                        iconSize: [iconWidth, iconHeight],    
+                        iconAnchor: [iconWidth / 2, iconHeight],  // Anchor at bottom-center
+                        popupAnchor: [0, -iconHeight] // Popup opens above the anchor
+                    });
+                    markerOptions.icon = customIcon;
+                    customIconUsed = true;
+                    console.log("Custom icon created for:", project.name, "with size", iconWidth, "x", iconHeight); 
+                } catch (e) {
+                    console.error("Error creating custom icon for:", project.name, e); 
+                }
+            } else {
+                console.log("Using default icon for:", project.name, "(Logo URL was:", project.logoUrl + ")"); 
             }
-            // If no valid logoUrl, Leaflet's default blue marker will be used for that project.
-
-            const marker = L.marker([project.lat, project.lng], markerOptions).addTo(map);
-
-            let popupContent = `<h3>${project.name}</h3>`;
-            popupContent += `<b>Country:</b> ${project.country}<br>`;
-            popupContent += `<b>Location:</b> ${project.locationName}<br>`;
-            popupContent += `<b>Type:</b> ${project.type}<br>`;
-            popupContent += `<b>Status:</b> ${project.status}<br>`;
-            if (project.description) {
-                popupContent += `<p>${project.description}</p>`;
-            }
-            const safeProjectName = project.name.replace(/"/g, '&quot;'); // Escape quotes for HTML attribute
-            popupContent += `<button class="suggest-edit-btn" data-projectname="${safeProjectName}">Suggest an Edit</button>`;
             
-            marker.bindPopup(popupContent);
+            try {
+                const marker = L.marker([project.lat, project.lng], markerOptions).addTo(map);
+                console.log("Marker added to map for:", project.name, (customIconUsed ? "with custom icon" : "with default icon")); 
+
+                let popupContent = `<h3>${project.name}</h3>`;
+                popupContent += `<b>Country:</b> ${project.country}<br>`;
+                popupContent += `<b>Location:</b> ${project.locationName}<br>`;
+                popupContent += `<b>Type:</b> ${project.type}<br>`;
+                popupContent += `<b>Status:</b> ${project.status}<br>`;
+                if (project.description) {
+                    popupContent += `<p>${project.description}</p>`;
+                }
+                const safeProjectName = project.name.replace(/"/g, '&quot;');
+                popupContent += `<button class="suggest-edit-btn" data-projectname="${safeProjectName}">Suggest an Edit</button>`;
+                marker.bindPopup(popupContent);
+
+            } catch (e) {
+                console.error("Error creating marker or popup for:", project.name, e); 
+            }
         });
+
+        console.log("Finished processing projects.");
 
         document.getElementById('map').addEventListener('click', function(event) {
             if (event.target.classList.contains('suggest-edit-btn')) {
                 const projectName = event.target.getAttribute('data-projectname');
                 const suggestion = prompt(`Suggest an edit for: ${projectName}\n\nPlease enter your suggestion:`);
                 if (suggestion !== null && suggestion.trim() !== "") { 
-                    // !!! REPLACE THIS WITH YOUR ACTUAL EMAIL ADDRESS !!!
-                    const email = 'YOUR_EMAIL_ADDRESS@example.com'; 
+                    const email = 'YOUR_EMAIL_ADDRESS@example.com'; // !!! REPLACE THIS !!!
                     const subject = `Map Edit Suggestion for: ${projectName}`;
                     const body = `Project: ${projectName}\n\nSuggestion:\n${suggestion}`;
                     window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
