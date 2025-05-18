@@ -14,228 +14,90 @@
      crossorigin=""></script>
     
     <style>
-        /* Set the size of the map */
-        #map {
-            height: 90vh; /* 90% of the viewport height */
-            width: 100%;
-        }
+        #map { height: 90vh; width: 100%; }
         body { margin: 0; font-family: Arial, sans-serif; background-color: #222; }
         h1 { color: #eee; text-align: center; padding: 10px 0;}
-        .leaflet-popup-content-wrapper {
-            border-radius: 5px;
-        }
-        .leaflet-popup-content {
-            margin: 10px !important;
-            font-size: 12px;
-            line-height: 1.4;
-        }
-        .leaflet-popup-content h3 {
-            margin-top: 0;
-            margin-bottom: 5px;
-            font-size: 14px;
-        }
-        .suggest-edit-btn {
-            margin-top: 10px;
-            padding: 5px 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
-        }
-        .suggest-edit-btn:hover {
-            background-color: #45a049;
-        }
+        .leaflet-popup-content-wrapper { border-radius: 5px; }
+        .leaflet-popup-content { margin: 10px !important; font-size: 12px; line-height: 1.4; }
+        .leaflet-popup-content h3 { margin-top: 0; margin-bottom: 5px; font-size: 14px; }
+        .suggest-edit-btn { margin-top: 10px; padding: 5px 10px; background-color: #4CAF50; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        .suggest-edit-btn:hover { background-color: #45a049; }
     </style>
 </head>
 <body>
-
     <h1>Ongoing Nuclear Projects</h1>
     <div id="map"></div>
 
     <script>
-        // 1. Initialize the map
-        const map = L.map('map').setView([62, 18], 4); // Latitude, Longitude, Zoom level
+        const map = L.map('map').setView([62, 18], 4);
 
-        // 2. Add a DARK tile layer (basemap)
         L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
             subdomains: 'abcd',
             maxZoom: 19
         }).addTo(map);
 
-        // 3. Define your nuclear project data
+        // --- YOU WILL NEED TO UPDATE logoUrl VALUES WITH ACTUAL WORKING IMAGE URLs ---
         const nuclearProjects = [
             // Denmark
             {
-              name: "Saltfoss Energy: Floating CMSR",
-              country: "Denmark",
-              locationName: "Copenhagen (Development for Export)",
-              lat: 55.6761,
-              lng: 12.5683,
-              type: "CMSR (Compact Molten Salt Reactor)",
-              status: "Development. Feasibility study with GPSC (Thailand) ongoing.",
-              description: "Floating Power Barges, export focus. First reactor H1 2030s. Challenge: Fuel availability, technology maturation."
+              name: "Saltfoss Energy: Floating CMSR", country: "Denmark", locationName: "Copenhagen (Development for Export)", lat: 55.6761, lng: 12.5683, type: "CMSR", status: "Development. Feasibility study with GPSC (Thailand) ongoing.", description: "Floating Power Barges, export focus. First reactor H1 2030s.", logoUrl: 'PATH_TO_YOUR_LOGO/saltfoss_logo.png' // Placeholder
             },
             {
-              name: "Copenhagen Atomics: Thorium MSR",
-              country: "Denmark",
-              locationName: "Copenhagen (Development for Export, e.g., Borneo)",
-              lat: 55.6761, // Shares coords with Saltfoss, consider slight offset if needed for distinct clicking on base map
-              lng: 12.5683, // For Copenhagen-based HQs, offsetting might be desired if map is very zoomed in
-              type: "Thorium Molten Salt Reactor",
-              status: "Development, prototyping. Non-fission prototype tested (2022). PSI test 2027.",
-              description: "Mass-manufactured SMRs for export (e.g., 1 GWe ammonia plant in Borneo). Borneo plant target 2028. Challenge: Large-scale funding, supply chain."
+              name: "Copenhagen Atomics: Thorium MSR", country: "Denmark", locationName: "Copenhagen (Development for Export, e.g., Borneo)", lat: 55.6750, lng: 12.5670, type: "Thorium MSR", status: "Development, prototyping. PSI test 2027.", description: "Mass-manufactured SMRs for export. Borneo plant target 2028.", logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Copenhagen_Atomics.png/100px-Copenhagen_Atomics.png' // Example from Wikimedia (check quality/size)
             },
             // Estonia
             {
-              name: "Fermi Energia: BWRX-300 Project",
-              country: "Estonia",
-              locationName: "Viru-Nigula or Lüganuse (Site Selection Ongoing)",
-              lat: 59.4440, 
-              lng: 26.6900, 
-              type: "SMR: BWRX-300 (2 units, 600 MWe total)",
-              status: "State Spatial Planning initiated (Jan 2025). Pre-FEED with Samsung C&T.",
-              description: "Proposed NPP. Site pre-selection 2025-2027. First SMR H2 2035. Challenge: Building regulatory system from scratch, FOAK risks."
+              name: "Fermi Energia: BWRX-300 Project", country: "Estonia", locationName: "Viru-Nigula or Lüganuse", lat: 59.4440, lng: 26.6900, type: "SMR: BWRX-300", status: "State Spatial Planning initiated (Jan 2025).", description: "Proposed 600 MWe NPP. First SMR H2 2035.", logoUrl: 'https://fermi.ee/wp-content/uploads/2023/08/fermi-energia-logo-1.svg' // Found on their media bank via site search
             },
             // Finland
             {
-              name: "Steady Energy: LDR-50 District Heating SMR",
-              country: "Finland",
-              locationName: "Helsinki (Planned Commercial Unit, Pilot 2025)",
-              lat: 60.1749, // Original coordinate for Helsinki
-              lng: 24.8017, // Original coordinate for Helsinki
-              type: "SMR: LDR-50 (District Heating)",
-              status: "LDR-50 design under STUK assessment. LDR-e (non-nuclear pilot) construction 2025.",
-              description: "Multiple commercial units planned (e.g., Helsinki, Kuopio). First commercial LDR-50 operation 2030. Challenge: FOAK for heating SMR, cost-competitiveness."
+              name: "Steady Energy: LDR-50 District Heating SMR", country: "Finland", locationName: "Helsinki (Planned)", lat: 60.1695, lng: 24.9354, type: "SMR: LDR-50", status: "LDR-50 design under STUK assessment. Pilot 2025.", description: "Multiple commercial units planned. First commercial operation 2030.", logoUrl: 'PATH_TO_YOUR_LOGO/steady_energy_logo.png' // Placeholder - find on brandfetch.com/steadyenergy.com (Result 6.2) or their site
             },
             {
-              name: "Fortum: New Nuclear Feasibility Study",
-              country: "Finland",
-              locationName: "Finland (Specific Sites TBD - Offset for Visibility)",
-              lat: 60.1705, // Slightly adjusted latitude from 60.1695
-              lng: 24.9364, // Slightly adjusted longitude from 24.9354
-              type: "Large Reactors & SMRs (Electricity)",
-              status: "Feasibility study concluded (Mar 2025). Developing project economics, partnerships.",
-              description: "Post-feasibility study. New nuclear supply earliest H2 2030s if conditions favorable. Requires risk-sharing. Challenge: Economic viability without support, long lead times."
+              name: "Fortum: New Nuclear Feasibility Study", country: "Finland", locationName: "Finland (Offset for Visibility)", lat: 60.1705, lng: 24.9364, type: "Large Reactors & SMRs", status: "Feasibility study concluded (Mar 2025).", description: "New nuclear supply earliest H2 2030s. Requires risk-sharing.", logoUrl: 'https://en.wikipedia.org/wiki/Fortum#/media/File:Fortum_logo.svg' // Common path for website logo
             },
             {
-              name: "TVO: SMR Support & Olkiluoto Focus",
-              country: "Finland",
-              locationName: "Olkiluoto",
-              lat: 61.2360,
-              lng: 21.4880,
-              type: "Supporting SMRs (Steady Energy LDR-50), Exploring Industrial SMRs",
-              status: "Primary focus on Olkiluoto fleet (life extension EIA submitted Dec 2024). Providing expertise to Steady Energy.",
-              description: "Exploring SMRs for industrial electricity. SMRs need series production & govt. support for cost reduction."
+              name: "TVO: SMR Support & Olkiluoto Focus", country: "Finland", locationName: "Olkiluoto", lat: 61.2360, lng: 21.4880, type: "Supporting SMRs", status: "Focus on Olkiluoto fleet. Providing expertise to Steady Energy.", description: "Exploring SMRs for industrial electricity.", logoUrl: 'PATH_TO_YOUR_LOGO/tvo_logo.png' // Placeholder
             },
             // Norway
             {
-              name: "Norsk Kjernekraft: SMR Project (Aure/Heim)",
-              country: "Norway",
-              locationName: "Aure and Heim (Taftøy, up to 1.5 GW)",
-              lat: 63.2670, 
-              lng: 8.5170,
-              type: "SMRs (Multiple technologies considered)",
-              status: "EIA program development by govt. agencies ongoing. EIA recommendation by Sept 2025.",
-              description: "Site investigations potentially 2025. Govt. committee report on nuclear due Apr 2026. Challenge: Establishing commercial licensing, securing finance."
+              name: "Norsk Kjernekraft: SMR Project (Aure/Heim)", country: "Norway", locationName: "Aure and Heim", lat: 63.2670, lng: 8.5170, type: "SMRs", status: "EIA program development ongoing.", description: "Site investigations potentially 2025.", logoUrl: 'PATH_TO_YOUR_LOGO/norsk_kjernekraft_logo.png' // Placeholder - check norskkjernekraft.com
             },
-            {
-              name: "Norsk Kjernekraft: SMR Project (Øygarden)",
-              country: "Norway",
-              locationName: "Øygarden (Kollsnes, up to 1.5 GW)",
-              lat: 60.5700, 
-              lng: 4.8700,
-              type: "SMRs",
-              status: "Assessment application submitted (Aug 2024).",
-              description: "Part of Norsk Kjernekraft's multi-site SMR development strategy."
-            },
-            {
-              name: "Norsk Kjernekraft: SMR Project (Halden)",
-              country: "Norway",
-              locationName: "Halden",
-              lat: 59.1290,
-              lng: 11.3920,
-              type: "SMRs",
-              status: "SMR potential evaluation ongoing.",
-              description: "Part of Norsk Kjernekraft's multi-site SMR development strategy."
-            },
-            {
-              name: "Norsk Kjernekraft: SMR Project (Vardø)",
-              country: "Norway",
-              locationName: "Vardø (600 MW)",
-              lat: 70.3700,
-              lng: 31.1030,
-              type: "SMRs",
-              status: "Site under discussion.",
-              description: "Part of Norsk Kjernekraft's multi-site SMR development strategy."
-            },
-            {
-              name: "Blykalla & Norsk Kjernekraft: SEALER Assessment",
-              country: "Norway",
-              locationName: "Norway (Sites with Norsk Kjernekraft)",
-              lat: 59.9139, 
-              lng: 10.7522,
-              type: "SMR: SEALER (Lead-Cooled Fast Reactor)",
-              status: "MoU (Feb 2025). Assessing site suitability, regulatory pathways, economics.",
-              description: "Collaboration to assess SEALER integration in Norwegian projects. Challenge: Licensing novel LFR."
-            },
+            // ... (Add logoUrl for other Norwegian projects: Øygarden, Halden, Vardø, Blykalla with Norsk Kjernekraft)
             // Sweden
             {
-              name: "Vattenfall (Videberg Kraft): New Nuclear at Ringhals",
-              country: "Sweden",
-              locationName: "Ringhals (Värö peninsula)",
-              lat: 57.2570,
-              lng: 12.1130,
-              type: "Large Reactors & SMRs (Rolls-Royce, GEH BWRX-300 shortlisted)",
-              status: "SMR feasibility study ongoing. Videberg Kraft AB established for state aid application.",
-              description: "New reactor operational H1 2030s at earliest. Intends to use state loans & CfDs. Challenge: FID for large projects, construction risk."
+              name: "Vattenfall (Videberg Kraft): New Nuclear at Ringhals", country: "Sweden", locationName: "Ringhals", lat: 57.2570, lng: 12.1130, type: "Large Reactors & SMRs", status: "SMR feasibility study ongoing.", description: "New reactor H1 2030s earliest.", logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/8/8c/Vattenfall_logo.svg' // SVG from Wikipedia
             },
             {
-              name: "Kärnfull Next: SMR Park (Valdemarsvik)",
-              country: "Sweden",
-              locationName: "Valdemarsvik (4-6 SMRs)",
-              lat: 58.2020,
-              lng: 16.6020,
-              type: "SMR: GEH BWRX-300, exploring KHNP i-SMR",
-              status: "Land rights secured, advancing to permitting/planning. MoU with Samsung C&T (Dec 2024).",
-              description: "Re:Firm South programme. First commercial SMR early 2030s. Challenge: Financing multiple projects, permitting, public acceptance at new sites."
+              name: "Kärnfull Next: SMR Park (Valdemarsvik)", country: "Sweden", locationName: "Valdemarsvik", lat: 58.2020, lng: 16.6020, type: "SMR: GEH BWRX-300", status: "Land rights secured.", description: "First commercial SMR early 2030s.", logoUrl: 'PATH_TO_YOUR_LOGO/karnfull_next_logo.png' // Placeholder - check knxt.se
             },
-            {
-              name: "Kärnfull Next: SMR Feasibility (Karlshamn)",
-              country: "Sweden",
-              locationName: "Karlshamn (Elleholm, Guö-Köpegårda)",
-              lat: 56.1720, 
-              lng: 14.8610,
-              type: "SMR",
-              status: "Feasibility studies ongoing.",
-              description: "Potential sites for SMR park development under evaluation."
-            },
-            {
-              name: "Blykalla: SEALER-One Demo Reactor",
-              country: "Sweden",
-              locationName: "Studsvik (Nyköping)",
-              lat: 58.7830, 
-              lng: 17.3930,
-              type: "Advanced SMR: SEALER (Lead-Cooled Fast Reactor, 55 MWe)",
-              status: "SEALER-One licensing underway. Non-nuclear test facility construction at Oskarshamn started Feb 2025.",
-              description: "Demo reactor aiming for criticality by 2029, commercial operation early 2030s. Challenge: Licensing novel LFR, scaling technology, further funding."
-            },
-            {
-              name: "Blykalla: SEALER Test Facility",
-              country: "Sweden",
-              locationName: "Oskarshamn",
-              lat: 57.4170,
-              lng: 16.6830,
-              type: "Non-nuclear test facility for SEALER SMR",
-              status: "Construction started Feb 2025. Phase 1 completion June 2025, testing Q3 2025.",
-              description: "Facility for testing components and systems for the SEALER lead-cooled fast reactor."
-            }
+            // ... (Add logoUrl for other Swedish projects: Kärnfull Karlshamn, Blykalla Studsvik, Blykalla Oskarshamn)
+            // Add placeholder logoUrl for all other projects for now
+             { name: "Norsk Kjernekraft: SMR Project (Øygarden)", country: "Norway", locationName: "Øygarden (Kollsnes, up to 1.5 GW)", lat: 60.5700, lng: 4.8700, type: "SMRs", status: "Assessment application submitted (Aug 2024).", description: "Part of Norsk Kjernekraft's multi-site SMR development strategy.", logoUrl: 'PATH_TO_YOUR_LOGO/norsk_kjernekraft_logo.png' },
+             { name: "Norsk Kjernekraft: SMR Project (Halden)", country: "Norway", locationName: "Halden", lat: 59.1290, lng: 11.3920, type: "SMRs", status: "SMR potential evaluation ongoing.", description: "Part of Norsk Kjernekraft's multi-site SMR development strategy.", logoUrl: 'PATH_TO_YOUR_LOGO/norsk_kjernekraft_logo.png' },
+             { name: "Norsk Kjernekraft: SMR Project (Vardø)", country: "Norway", locationName: "Vardø (600 MW)", lat: 70.3700, lng: 31.1030, type: "SMRs", status: "Site under discussion.", description: "Part of Norsk Kjernekraft's multi-site SMR development strategy.", logoUrl: 'PATH_TO_YOUR_LOGO/norsk_kjernekraft_logo.png' },
+             { name: "Blykalla & Norsk Kjernekraft: SEALER Assessment", country: "Norway", locationName: "Norway (Sites with Norsk Kjernekraft)", lat: 59.9139, lng: 10.7522, type: "SMR: SEALER", status: "MoU (Feb 2025). Assessing site suitability.", description: "Collaboration for SEALER integration.", logoUrl: 'PATH_TO_YOUR_LOGO/blykalla_logo.png' },
+             { name: "Kärnfull Next: SMR Feasibility (Karlshamn)", country: "Sweden", locationName: "Karlshamn (Elleholm, Guö-Köpegårda)", lat: 56.1720, lng: 14.8610, type: "SMR", status: "Feasibility studies ongoing.", description: "Potential sites for SMR park.", logoUrl: 'PATH_TO_YOUR_LOGO/karnfull_next_logo.png' },
+             { name: "Blykalla: SEALER-One Demo Reactor", country: "Sweden", locationName: "Studsvik (Nyköping)", lat: 58.7830, lng: 17.3930, type: "Advanced SMR: SEALER", status: "SEALER-One licensing underway.", description: "Demo reactor aiming for criticality by 2029.", logoUrl: 'PATH_TO_YOUR_LOGO/blykalla_logo.png' },
+             { name: "Blykalla: SEALER Test Facility", country: "Sweden", locationName: "Oskarshamn", lat: 57.4170, lng: 16.6830, type: "Non-nuclear test facility", status: "Construction started Feb 2025.", description: "Facility for SEALER components.", logoUrl: 'PATH_TO_YOUR_LOGO/blykalla_logo.png' }
         ];
 
-        // 4. Add markers to the map and create popups with "Suggest an Edit" button
         nuclearProjects.forEach(project => {
-            const marker = L.marker([project.lat, project.lng]).addTo(map);
+            let markerOptions = {};
+
+            if (project.logoUrl && project.logoUrl.startsWith('http')) { // Basic check for a valid URL
+                const customIcon = L.icon({
+                    iconUrl: project.logoUrl,
+                    iconSize: [32, 32], // Adjust width and height as needed. Can be different for each logo if desired.
+                    iconAnchor: [16, 32],   // Point of the icon which will correspond to marker's location (bottom-center for 32x32)
+                    popupAnchor: [0, -32]  // Point from which the popup should open relative to the iconAnchor (top-center)
+                });
+                markerOptions.icon = customIcon;
+            }
+            // If no logoUrl, Leaflet's default blue marker will be used.
+
+            const marker = L.marker([project.lat, project.lng], markerOptions).addTo(map);
 
             let popupContent = `<h3>${project.name}</h3>`;
             popupContent += `<b>Country:</b> ${project.country}<br>`;
@@ -245,37 +107,27 @@
             if (project.description) {
                 popupContent += `<p>${project.description}</p>`;
             }
-            // Add the button - Ensure project.name is properly escaped for HTML attribute
             const safeProjectName = project.name.replace(/"/g, '&quot;');
             popupContent += `<button class="suggest-edit-btn" data-projectname="${safeProjectName}">Suggest an Edit</button>`;
             
             marker.bindPopup(popupContent);
         });
 
-        // 5. Event listener for "Suggest an Edit" button clicks
         document.getElementById('map').addEventListener('click', function(event) {
             if (event.target.classList.contains('suggest-edit-btn')) {
                 const projectName = event.target.getAttribute('data-projectname');
                 const suggestion = prompt(`Suggest an edit for: ${projectName}\n\nPlease enter your suggestion:`);
-
-                if (suggestion !== null && suggestion.trim() !== "") { // User entered something and didn't cancel
-                    // !!! REPLACE THIS WITH YOUR ACTUAL EMAIL ADDRESS !!!
-                    const email = 'YOUR_EMAIL_ADDRESS@example.com'; 
+                if (suggestion !== null && suggestion.trim() !== "") {
+                    const email = 'YOUR_EMAIL_ADDRESS@example.com'; // !!! REPLACE THIS !!!
                     const subject = `Map Edit Suggestion for: ${projectName}`;
                     const body = `Project: ${projectName}\n\nSuggestion:\n${suggestion}`;
-                    
                     window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-                    
                     alert("Thank you! Your email client should open for you to send the suggestion.");
-
-                } else if (suggestion !== null) { // User submitted empty suggestion
+                } else if (suggestion !== null) {
                     alert("No suggestion provided.");
                 }
-                // If suggestion is null, the user pressed cancel - do nothing.
             }
         });
-
     </script>
-
 </body>
 </html>
