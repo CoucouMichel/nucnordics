@@ -90,7 +90,7 @@
               type: "SMR: LDR-50",
               status: "LDR-50 design under STUK assessment. Pilot 2025.",
               description: "Multiple commercial units planned. First commercial operation 2030.",
-              logoUrl: 'https://github.com/CoucouMichel/nucnordics/blob/750a8eadf293466af7d250970ca80388e39133be/markers/steady.png' // Placeholder
+              logoUrl: 'https://raw.githubusercontent.com/CoucouMichel/nucnordics/refs/heads/main/markers/steady.png' // Placeholder
             },
             {
               name: "Fortum: New Nuclear Feasibility Study",
@@ -101,7 +101,7 @@
               type: "Large Reactors & SMRs",
               status: "Feasibility study concluded (Mar 2025).",
               description: "New nuclear supply earliest H2 2030s. Requires risk-sharing.",
-              logoUrl: 'https://github.com/CoucouMichel/nucnordics/blob/750a8eadf293466af7d250970ca80388e39133be/markers/fortum.png' // Example: Double-check this URL directly in your browser
+              logoUrl: 'https://raw.githubusercontent.com/CoucouMichel/nucnordics/refs/heads/main/markers/fortum.png' // Example: Double-check this URL directly in your browser
             },
             {
               name: "TVO: SMR Support & Olkiluoto Focus",
@@ -229,28 +229,29 @@
         ];
 
   
-       nuclearProjects.forEach(project => {
+nuclearProjects.forEach(project => {
             let markerOptions = {};
 
-            if (project.iconUrl && typeof project.iconUrl === 'string') { // Check if iconUrl is provided
+            // Use project.logoUrl to match your data array
+            if (project.logoUrl && typeof project.logoUrl === 'string' && project.logoUrl.startsWith('http')) { 
                 try {
                     const customIcon = L.icon({
-                        iconUrl: project.iconUrl,
+                        iconUrl: project.logoUrl, // Corrected to use project.logoUrl
                         iconSize: [customMarkerWidth, customMarkerHeight], // Use defined standard size
                         iconAnchor: [customMarkerWidth / 2, customMarkerHeight], // Anchor at bottom-center
                         popupAnchor: [0, -customMarkerHeight] // Popup opens above the anchor
                     });
                     markerOptions.icon = customIcon;
                 } catch (e) {
-                    console.error("Error creating custom icon for:", project.name, project.iconUrl, e);
+                    console.error("Error creating custom icon for:", project.name, project.logoUrl, e);
                     // Fallback to default marker if icon creation fails
                 }
             }
-            // If no iconUrl or if icon creation failed, Leaflet's default blue marker will be used.
+            // If no valid project.logoUrl or if icon creation failed, Leaflet's default blue marker will be used.
 
             const marker = L.marker([project.lat, project.lng], markerOptions).addTo(map);
 
-            // Popup logic
+            // Popup logic (remains the same)
             let popupContent = `<h3>${project.name}</h3>`;
             popupContent += `<b>Country:</b> ${project.country}<br>`;
             popupContent += `<b>Location:</b> ${project.locationName}<br>`;
