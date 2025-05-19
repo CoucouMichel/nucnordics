@@ -25,10 +25,58 @@
         .leaflet-popup-content h3 { margin-top: 0; margin-bottom: 5px; font-size: 14px; }
         .suggest-edit-btn { margin-top: 10px; padding: 5px 10px; background-color: #4CAF50; color: white; border: none; border-radius: 3px; cursor: pointer; }
         .suggest-edit-btn:hover { background-color: #45a049; }
+
+        #header-controls {
+            background-color: #333; /* Dark background for the header area */
+            padding: 10px;
+            text-align: center; /* Center the content of the header */
+        }
+
+        #title-reset-container {
+            display: flex;
+            justify-content: center; /* Center title and reset button */
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        #title-reset-container h1 {
+            margin: 0; /* Remove default h1 margin */
+            padding-right: 20px; /* Space between title and reset button */
+        }
+
+        #resetViewBtn, .country-btn {
+            padding: 8px 12px;
+            margin: 0 5px;
+            background-color: #555;
+            color: white;
+            border: 1px solid #666;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        #resetViewBtn:hover, .country-btn:hover {
+            background-color: #6E6E6E;
+        }
+
+        #country-navigation {
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
-    <h1>Ongoing Nuclear Projects</h1>
+    <div id="header-controls">
+        <div id="title-reset-container">
+            <h1>Ongoing Nuclear Projects</h1>
+            <button id="resetViewBtn">Reset Initial View</button>
+        </div>
+        <div id="country-navigation">
+            <button class="country-btn" data-countrycode="SE">🇸🇪 Sweden</button>
+            <button class="country-btn" data-countrycode="FI">🇫🇮 Finland</button>
+            <button class="country-btn" data-countrycode="DK">🇩🇰 Denmark</button>
+            <button class="country-btn" data-countrycode="NO">🇳🇴 Norway</button>
+            <button class="country-btn" data-countrycode="EE">🇪🇪 Estonia</button>
+        </div>
+    </div>
     <div id="map"></div>
 
     <script>
