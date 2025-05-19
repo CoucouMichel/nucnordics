@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,11 +6,16 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
      crossorigin=""/>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
      crossorigin=""></script>
     
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+        
     <style>
         #map { height: 90vh; width: 100%; }
         body { margin: 0; font-family: Arial, sans-serif; background-color: #222; }
@@ -29,7 +32,7 @@
     <div id="map"></div>
 
     <script>
-        const map = L.map('map').setView([60.0, 20.0], 5); // Closer initial view
+        const map = L.map('map').setView([60.0, 20.0], 5);
 
         L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
@@ -228,28 +231,35 @@
             }
         ];
 
-  
-nuclearProjects.forEach(project => {
+          // ---- START: Leaflet.markercluster Implementation ----
+        // Create a new MarkerClusterGroup
+        const markers = L.markerClusterGroup({
+            // You can customize options here, e.g.:
+            // spiderfyOnMaxZoom: true,
+            // showCoverageOnHover: false,
+            // zoomToBoundsOnClick: true
+        });
+        // ---- END: Leaflet.markercluster Implementation ----
+        
+        nuclearProjects.forEach(project => {
             let markerOptions = {};
 
-            // Use project.logoUrl to match your data array
-            if (project.logoUrl && typeof project.logoUrl === 'string' && project.logoUrl.startsWith('http')) { 
+            if (project.logoUrl && typeof project.logoUrl === 'string' && project.logoUrl.startsWith('http')) {
                 try {
                     const customIcon = L.icon({
-                        iconUrl: project.logoUrl, // Corrected to use project.logoUrl
-                        iconSize: [customMarkerWidth, customMarkerHeight], // Use defined standard size
-                        iconAnchor: [customMarkerWidth / 2, customMarkerHeight], // Anchor at bottom-center
-                        popupAnchor: [0, -customMarkerHeight] // Popup opens above the anchor
+                        iconUrl: project.logoUrl,
+                        iconSize: [customMarkerWidth, customMarkerHeight],
+                        iconAnchor: [customMarkerWidth / 2, customMarkerHeight],
+                        popupAnchor: [0, -customMarkerHeight]
                     });
                     markerOptions.icon = customIcon;
                 } catch (e) {
                     console.error("Error creating custom icon for:", project.name, project.logoUrl, e);
-                    // Fallback to default marker if icon creation fails
                 }
             }
-            // If no valid project.logoUrl or if icon creation failed, Leaflet's default blue marker will be used.
 
-            const marker = L.marker([project.lat, project.lng], markerOptions).addTo(map);
+            const marker = L.marker([project.lat, project.lng], markerOptions);
+
 
             // Popup logic (remains the same)
             let popupContent = `<h3>${project.name}</h3>`;
