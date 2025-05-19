@@ -231,23 +231,20 @@
             }
         ];
 
-          // ---- START: Leaflet.markercluster Implementation ----
-        // Create a new MarkerClusterGroup
         const markers = L.markerClusterGroup({
-            // You can customize options here, e.g.:
-            // spiderfyOnMaxZoom: true,
+            // spiderfyOnMaxZoom: true, // Example option
             // showCoverageOnHover: false,
             // zoomToBoundsOnClick: true
         });
-        // ---- END: Leaflet.markercluster Implementation ----
         
         nuclearProjects.forEach(project => {
             let markerOptions = {};
 
+            // Using project.logoUrl to match your data array
             if (project.logoUrl && typeof project.logoUrl === 'string' && project.logoUrl.startsWith('http')) {
                 try {
                     const customIcon = L.icon({
-                        iconUrl: project.logoUrl,
+                        iconUrl: project.logoUrl, 
                         iconSize: [customMarkerWidth, customMarkerHeight],
                         iconAnchor: [customMarkerWidth / 2, customMarkerHeight],
                         popupAnchor: [0, -customMarkerHeight]
@@ -260,8 +257,6 @@
 
             const marker = L.marker([project.lat, project.lng], markerOptions);
 
-
-            // Popup logic (remains the same)
             let popupContent = `<h3>${project.name}</h3>`;
             popupContent += `<b>Country:</b> ${project.country}<br>`;
             popupContent += `<b>Location:</b> ${project.locationName}<br>`;
@@ -273,7 +268,15 @@
             const safeProjectName = project.name.replace(/"/g, '&quot;');
             popupContent += `<button class="suggest-edit-btn" data-projectname="${safeProjectName}">Suggest an Edit</button>`;
             marker.bindPopup(popupContent);
+
+            // ---- THIS IS THE CRUCIAL FIX for adding marker to the cluster group ----
+            markers.addLayer(marker); 
+            // ---- END CRUCIAL FIX ----
         });
+
+        // ---- THIS IS THE CRUCIAL FIX for adding the cluster group to the map ----
+        map.addLayer(markers);
+        // ---- END CRUCIAL FIX ----
 
         // Event listener for "Suggest an Edit" button clicks
         document.getElementById('map').addEventListener('click', function(event) {
