@@ -22,35 +22,6 @@
         .leaflet-popup-content h3 { margin-top: 0; margin-bottom: 5px; font-size: 14px; }
         .suggest-edit-btn { margin-top: 10px; padding: 5px 10px; background-color: #4CAF50; color: white; border: none; border-radius: 3px; cursor: pointer; }
         .suggest-edit-btn:hover { background-color: #45a049; }
-
-        /* Custom DivIcon Styles */
-        .custom-marker-frame {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            /* background-color will be set by country */
-            border-radius: 5px; /* Optional: rounded corners for the frame */
-            box-shadow: 0 0 5px rgba(0,0,0,0.5);
-            /* The size of this frame will be controlled by L.DivIcon's iconSize option */
-            padding: 3px; /* Padding between the colored frame and the white background */
-            box-sizing: border-box;
-        }
-
-        .custom-marker-whitebg {
-            background-color: white;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden; /* Ensure image doesn't spill out */
-        }
-
-        .custom-marker-whitebg img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain; /* Scales image down to fit, preserving aspect ratio */
-        }
     </style>
 </head>
 <body>
@@ -66,14 +37,11 @@
             maxZoom: 19
         }).addTo(map);
 
-        const countryColors = {
-            "Sweden": "yellow",
-            "Finland": "blue", // Standard blue, consider 'dodgerblue' or 'cornflowerblue' for better visibility
-            "Denmark": "red",
-            "Norway": "darkred",
-            "Estonia": "black",
-            "Default": "grey" // Fallback color
-        };
+        // --- YOU WILL CREATE CUSTOM PNG MARKERS AND PROVIDE PATHS IN iconUrl ---
+        // It's recommended to make all your custom marker PNGs the same dimensions.
+        // Example: If your PNGs are 32px wide and 42px tall (like a pin)
+        const customMarkerWidth = 32; 
+        const customMarkerHeight = 42;
 
         // --- YOU WILL NEED TO UPDATE logoUrl VALUES WITH ACTUAL WORKING IMAGE URLs ---
         const nuclearProjects = [
@@ -261,46 +229,44 @@
         ];
 
   
-          // Define the size for the DivIcon frame
-        const markerFrameSize = 40; // e.g., 40x40 pixels for the colored frame
-
-        nuclearProjects.forEach(project => {
+       nuclearProjects.forEach(project => {
             let markerOptions = {};
-            const projectCountryColor = countryColors[project.country] || countryColors["Default"];
 
-            if (project.logoUrl && project.logoUrl.startsWith('http')) {
-                const iconHtml = `
-                    <div class="custom-marker-frame" style="background-color: ${projectCountryColor};">
-                        <div class="custom-marker-whitebg">
-                            <img src="${project.logoUrl}" alt="${project.name} Logo">
-                        </div>
-                    </div>`;
-
-                const customDivIcon = L.divIcon({
-                    html: iconHtml,
-                    className: 'leaflet-div-icon-custom', // Add a general class, specific color is inline
-                    iconSize: [markerFrameSize, markerFrameSize],
-                    iconAnchor: [markerFrameSize / 2, markerFrameSize], // Anchor at bottom-center of the frame
-                    popupAnchor: [0, -markerFrameSize] // Popup above the frame
-                });
-                markerOptions.icon = customDivIcon;
+            if (project.iconUrl && typeof project.iconUrl === 'string') { // Check if iconUrl is provided
+                try {
+                    const customIcon = L.icon({
+                        iconUrl: project.iconUrl,
+                        iconSize: [customMarkerWidth, customMarkerHeight], // Use defined standard size
+                        iconAnchor: [customMarkerWidth / 2, customMarkerHeight], // Anchor at bottom-center
+                        popupAnchor: [0, -customMarkerHeight] // Popup opens above the anchor
+                    });
+                    markerOptions.icon = customIcon;
+                } catch (e) {
+                    console.error("Error creating custom icon for:", project.name, project.iconUrl, e);
+                    // Fallback to default marker if icon creation fails
+                }
             }
-            // If no logoUrl, Leaflet's default blue marker will be used.
+            // If no iconUrl or if icon creation failed, Leaflet's default blue marker will be used.
 
             const marker = L.marker([project.lat, project.lng], markerOptions).addTo(map);
 
-            // Popup logic (remains the same)
+            // Popup logic
             let popupContent = `<h3>${project.name}</h3>`;
-            // ... (rest of your popup content) ...
+            popupContent += `<b>Country:</b> ${project.country}<br>`;
+            popupContent += `<b>Location:</b> ${project.locationName}<br>`;
+            popupContent += `<b>Type:</b> ${project.type}<br>`;
+            popupContent += `<b>Status:</b> ${project.status}<br>`;
+            if (project.description) {
+                popupContent += `<p>${project.description}</p>`;
+            }
             const safeProjectName = project.name.replace(/"/g, '&quot;');
             popupContent += `<button class="suggest-edit-btn" data-projectname="${safeProjectName}">Suggest an Edit</button>`;
             marker.bindPopup(popupContent);
         });
 
-        // Event listener for "Suggest an Edit" button clicks (remains the same)
+        // Event listener for "Suggest an Edit" button clicks
         document.getElementById('map').addEventListener('click', function(event) {
-            // ... (your existing suggest edit logic) ...
-             if (event.target.classList.contains('suggest-edit-btn')) {
+            if (event.target.classList.contains('suggest-edit-btn')) {
                 const projectName = event.target.getAttribute('data-projectname');
                 const suggestion = prompt(`Suggest an edit for: ${projectName}\n\nPlease enter your suggestion:`);
                 if (suggestion !== null && suggestion.trim() !== "") { 
