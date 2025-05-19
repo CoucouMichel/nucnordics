@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,38 +17,35 @@
      crossorigin=""></script>
     
     <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
-        
+    
     <style>
         #map { height: 90vh; width: 100%; }
         body { margin: 0; font-family: Arial, sans-serif; background-color: #222; }
-        h1 { color: #eee; text-align: center; padding: 10px 0;}
-        .leaflet-popup-content-wrapper { border-radius: 5px; }
-        .leaflet-popup-content { margin: 10px !important; font-size: 12px; line-height: 1.4; }
-        .leaflet-popup-content h3 { margin-top: 0; margin-bottom: 5px; font-size: 14px; }
-        .suggest-edit-btn { margin-top: 10px; padding: 5px 10px; background-color: #4CAF50; color: white; border: none; border-radius: 3px; cursor: pointer; }
-        .suggest-edit-btn:hover { background-color: #45a049; }
-
+        
         #header-controls {
-            background-color: #333; /* Dark background for the header area */
+            background-color: #333;
             padding: 10px;
-            text-align: center; /* Center the content of the header */
+            text-align: center;
         }
 
         #title-reset-container {
             display: flex;
-            justify-content: center; /* Center title and reset button */
+            justify-content: center;
             align-items: center;
             margin-bottom: 10px;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
         }
 
         #title-reset-container h1 {
-            margin: 0; /* Remove default h1 margin */
-            padding-right: 20px; /* Space between title and reset button */
+            color: #eee;
+            margin: 0 20px 0 0; /* Adjust margin for spacing */
+            padding: 0;
+            font-size: 24px; /* Adjust as needed */
         }
 
         #resetViewBtn, .country-btn {
             padding: 8px 12px;
-            margin: 0 5px;
+            margin: 5px 5px; /* Add vertical margin for wrapped items */
             background-color: #555;
             color: white;
             border: 1px solid #666;
@@ -61,6 +60,12 @@
         #country-navigation {
             margin-top: 10px;
         }
+
+        .leaflet-popup-content-wrapper { border-radius: 5px; }
+        .leaflet-popup-content { margin: 10px !important; font-size: 12px; line-height: 1.4; }
+        .leaflet-popup-content h3 { margin-top: 0; margin-bottom: 5px; font-size: 14px; }
+        .suggest-edit-btn { margin-top: 10px; padding: 5px 10px; background-color: #4CAF50; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        .suggest-edit-btn:hover { background-color: #45a049; }
     </style>
 </head>
 <body>
@@ -80,7 +85,11 @@
     <div id="map"></div>
 
     <script>
-        const map = L.map('map').setView([60.0, 20.0], 5);
+        // Initial map view parameters
+        const initialCenter = [60.0, 20.0];
+        const initialZoom = 5;
+
+        const map = L.map('map').setView(initialCenter, initialZoom);
 
         L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
@@ -88,11 +97,10 @@
             maxZoom: 19
         }).addTo(map);
 
-        // --- YOU WILL CREATE CUSTOM PNG MARKERS AND PROVIDE PATHS IN iconUrl ---
-        // It's recommended to make all your custom marker PNGs the same dimensions.
-        // Example: If your PNGs are 32px wide and 42px tall (like a pin)
+        // Define dimensions for your custom PNG markers
+        // Ensure all your custom PNGs are created with these dimensions
         const customMarkerWidth = 50; 
-        const customMarkerHeight = 50;
+        const customMarkerHeight = 50; // Example for a pin-like shape
 
         // --- YOU WILL NEED TO UPDATE logoUrl VALUES WITH ACTUAL WORKING IMAGE URLs ---
         const nuclearProjects = [
@@ -280,28 +288,41 @@
         ];
 
         const markers = L.markerClusterGroup({
-            // spiderfyOnMaxZoom: true, // Example option
-            // showCoverageOnHover: false,
-            // zoomToBoundsOnClick: true
+            // You can customize cluster options here, e.g.:
+            // spiderfyOnMaxZoom: false, // default is true
+            // showCoverageOnHover: true, // default is true
+            // zoomToBoundsOnClick: true // default is true
         });
         
         nuclearProjects.forEach(project => {
             let markerOptions = {};
 
-            // Using project.logoUrl to match your data array
-            if (project.logoUrl && typeof project.logoUrl === 'string' && project.logoUrl.startsWith('http')) {
+            if (project.iconUrl && typeof project.iconUrl === 'string' && project.iconUrl.startsWith('http')) { // Check for valid-looking URL
                 try {
                     const customIcon = L.icon({
-                        iconUrl: project.logoUrl, 
+                        iconUrl: project.iconUrl,
                         iconSize: [customMarkerWidth, customMarkerHeight],
-                        iconAnchor: [customMarkerWidth / 2, customMarkerHeight],
-                        popupAnchor: [0, -customMarkerHeight]
+                        iconAnchor: [customMarkerWidth / 2, customMarkerHeight], // Assumes anchor is bottom-center
+                        popupAnchor: [0, -customMarkerHeight] 
                     });
                     markerOptions.icon = customIcon;
                 } catch (e) {
-                    console.error("Error creating custom icon for:", project.name, project.logoUrl, e);
+                    console.error("Error creating custom icon for:", project.name, project.iconUrl, e);
+                }
+            } else if (project.iconUrl && typeof project.iconUrl === 'string') { // For local relative paths
+                 try {
+                    const customIcon = L.icon({
+                        iconUrl: project.iconUrl, // e.g., 'markers/finland_tvo.png'
+                        iconSize: [customMarkerWidth, customMarkerHeight],
+                        iconAnchor: [customMarkerWidth / 2, customMarkerHeight], 
+                        popupAnchor: [0, -customMarkerHeight] 
+                    });
+                    markerOptions.icon = customIcon;
+                } catch (e) {
+                    console.error("Error creating custom icon (local path) for:", project.name, project.iconUrl, e);
                 }
             }
+            // If no iconUrl or if icon creation failed, Leaflet's default blue marker will be used.
 
             const marker = L.marker([project.lat, project.lng], markerOptions);
 
@@ -317,14 +338,33 @@
             popupContent += `<button class="suggest-edit-btn" data-projectname="${safeProjectName}">Suggest an Edit</button>`;
             marker.bindPopup(popupContent);
 
-            // ---- THIS IS THE CRUCIAL FIX for adding marker to the cluster group ----
             markers.addLayer(marker); 
-            // ---- END CRUCIAL FIX ----
         });
 
-        // ---- THIS IS THE CRUCIAL FIX for adding the cluster group to the map ----
         map.addLayer(markers);
-        // ---- END CRUCIAL FIX ----
+
+        // Reset View Button
+        document.getElementById('resetViewBtn').addEventListener('click', function() {
+            map.setView(initialCenter, initialZoom);
+        });
+
+        // Country specific views
+        const countryViews = {
+            'SE': { center: [62.0, 17.0], zoom: 5 },
+            'FI': { center: [61.5, 25.5], zoom: 5 },
+            'DK': { center: [56.0, 10.5], zoom: 7 },
+            'NO': { center: [61.5, 9.0], zoom: 5 },
+            'EE': { center: [58.7, 25.0], zoom: 7 }
+        };
+
+        document.querySelectorAll('.country-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const countryCode = this.getAttribute('data-countrycode');
+                if (countryViews[countryCode]) {
+                    map.setView(countryViews[countryCode].center, countryViews[countryCode].zoom);
+                }
+            });
+        });
 
         // Event listener for "Suggest an Edit" button clicks
         document.getElementById('map').addEventListener('click', function(event) {
